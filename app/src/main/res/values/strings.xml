@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">StudyJam</string>
+    <string name="news_title">News number %s</string>
 </resources>
