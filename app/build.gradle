@@ -30,10 +30,13 @@ android {
     productFlavors{
         production{
 
-            buildConfigField "String","API_URL","\"\""
+            buildConfigField "String","API_URL","\"http://api.nytimes.com/\""
+            buildConfigField "String", "API_KEY", "\"fb6f796bd3a1473abd18c77d93804511\""
         }
         stage{
             applicationId "ru.webant.studyjam.stage"
+            buildConfigField "String","API_URL","\"http://api.nytimes.com/\""
+            buildConfigField "String", "API_KEY", "\"fb6f796bd3a1473abd18c77d93804511\""
         }
     }
 }
@@ -51,4 +54,7 @@ dependencies {
     compile "com.android.support:cardview-v7:$supportLibVersion"
     compile "com.android.support:recyclerview-v7:$supportLibVersion"
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
