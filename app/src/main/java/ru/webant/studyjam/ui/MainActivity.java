@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ru.webant.studyjam.BuildConfig;
 import ru.webant.studyjam.utilRecycler.MyAdapter;
 import ru.webant.studyjam.R;
 import ru.webant.studyjam.utilRecycler.RecyclerItemClickListener;
@@ -26,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        Toast.makeText(this, BuildConfig.API_URL, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, BuildConfig.VERSION_NAME, Toast.LENGTH_SHORT).show();
         for (int i = 0; i < 10; i++) {
             listNews.add(getResources().getString(R.string.news_title, Integer.toString(i)));
         }
