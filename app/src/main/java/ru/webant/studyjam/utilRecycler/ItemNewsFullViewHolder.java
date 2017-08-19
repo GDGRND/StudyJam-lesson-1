@@ -1,7 +1,8 @@
 package ru.webant.studyjam.utilRecycler;
 
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,15 +20,12 @@ import ru.webant.studyjam.models.Multimedia;
  * Created by vdaron on 19.08.17.
  */
 
-class ItemNewsFullViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+class ItemNewsFullViewHolder extends Node.Item implements View.OnClickListener {
 
     private TextView titleText;
     private TextView subtitleText;
     private TextView dateText;
     private ImageView fullImage;
-
-    private Article article;
-    private ArticleClickListener listener;
 
     public ItemNewsFullViewHolder(View itemView) {
         super(itemView);
@@ -38,9 +36,18 @@ class ItemNewsFullViewHolder extends RecyclerView.ViewHolder implements View.OnC
         itemView.setOnClickListener(this);
     }
 
+    static Node.Creator getFactory() {
+        return new Node.Creator() {
+            @Override
+            public Node.Item create(ViewGroup parent) {
+                return new ItemNewsFullViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_full, parent, false));
+            }
+        };
+    }
+
     void bind(Article article, ArticleClickListener listener) {
-        this.article = article;
-        this.listener = listener;
+        super.bind(article, listener);
+
         titleText.setText(article.getTitle());
         subtitleText.setText(article.getDescription());
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -54,14 +61,6 @@ class ItemNewsFullViewHolder extends RecyclerView.ViewHolder implements View.OnC
                     .into(fullImage);
         } else {
             fullImage.setVisibility(View.GONE);
-        }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        if (listener != null && article != null) {
-            listener.onClick(article);
         }
     }
 }

@@ -1,7 +1,8 @@
 package ru.webant.studyjam.utilRecycler;
 
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -9,7 +10,6 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import ru.webant.studyjam.R;
 import ru.webant.studyjam.models.Article;
@@ -20,15 +20,12 @@ import ru.webant.studyjam.models.Multimedia;
  * Created by vdaron on 19.08.17.
  */
 
-public class ItemNewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ItemNewsViewHolder extends Node.Item implements View.OnClickListener {
 
     private TextView titleNews;
     private TextView descriptionNews;
     private ImageView imageNews;
     private TextView timeNews;
-
-    private Article article;
-    private ArticleClickListener listener;
 
     public ItemNewsViewHolder(View itemView) {
         super(itemView);
@@ -39,9 +36,18 @@ public class ItemNewsViewHolder extends RecyclerView.ViewHolder implements View.
         itemView.setOnClickListener(this);
     }
 
+    static Node.Creator getFactory() {
+        return new Node.Creator() {
+            @Override
+            public Node.Item create(ViewGroup parent) {
+                return new ItemNewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false));
+            }
+        };
+    }
+
     void bind(Article article, ArticleClickListener listener) {
-        this.article = article;
-        this.listener = listener;
+        super.bind(article, listener);
+
         titleNews.setText(article.getTitle());
         descriptionNews.setText(article.getDescription());
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -57,13 +63,6 @@ public class ItemNewsViewHolder extends RecyclerView.ViewHolder implements View.
                     .into(imageNews);
         } else {
             imageNews.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (listener != null && article != null) {
-            listener.onClick(article);
         }
     }
 }
