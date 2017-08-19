@@ -24,10 +24,10 @@ public class MyAdapter extends RecyclerView.Adapter {
         this.listNews = listNews;
         this.listener = listener;
 
-        itemDividerCreator = ItemDividerViewHolder.getFactory();
-        itemEmptyCreator = ItemEmptyViewHolder.getFactory();
-        itemFullNewsCreator = ItemNewsFullViewHolder.getFactory();
-        itemNewsCreator = ItemNewsViewHolder.getFactory();
+        itemDividerCreator = ItemDividerViewHolder.getCreator();
+        itemEmptyCreator = ItemEmptyViewHolder.getCreator();
+        itemFullNewsCreator = ItemNewsFullViewHolder.getCreator();
+        itemNewsCreator = ItemNewsViewHolder.getCreator();
 
         buildAdapter();
     }

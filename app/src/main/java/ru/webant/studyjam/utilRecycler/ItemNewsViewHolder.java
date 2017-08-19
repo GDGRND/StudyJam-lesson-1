@@ -36,7 +36,7 @@ public class ItemNewsViewHolder extends Node.Item implements View.OnClickListene
         itemView.setOnClickListener(this);
     }
 
-    static Node.Creator getFactory() {
+    static Node.Creator getCreator() {
         return new Node.Creator() {
             @Override
             public Node.Item create(ViewGroup parent) {
