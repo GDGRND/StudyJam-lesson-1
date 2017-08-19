@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import ru.webant.studyjam.R;
 import ru.webant.studyjam.models.Article;
+import ru.webant.studyjam.models.ImageType;
 import ru.webant.studyjam.models.Multimedia;
 
 /**
@@ -40,13 +41,18 @@ public class ItemNewsViewHolder extends RecyclerView.ViewHolder {
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         timeNews.setText(formatter.format(article.getCreatedDate()));
 
-        ArrayList<Multimedia> multimedias = article.getMultimedia();
-        if (multimedias != null && !multimedias.isEmpty()) {
+        Multimedia multimedia = article.getImageByType(ImageType.THUMBNAIL_LARGE);
+        if (multimedia != null) {
+            imageNews.setVisibility(View.VISIBLE);
             Picasso.with(itemView.getContext())
-                    .load(multimedias.get(0).getUrl())
-                    .resize(multimedias.get(0).getWidth() * 3, multimedias.get(0).getHeight() * 3)
+                    .load(multimedia.getUrl())
+                    .placeholder(R.drawable.ic_fiber_new_black_24dp)
+                    .resize(multimedia.getWidth(), multimedia.getHeight())
                     .centerCrop()
                     .into(imageNews);
+        } else {
+            imageNews.setVisibility(View.GONE);
         }
+
     }
 }

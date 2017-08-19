@@ -29,9 +29,11 @@ public class MyAdapter extends RecyclerView.Adapter {
 
     public MyAdapter(ArrayList<Article> listNews) {
         this.listNews = listNews;
+        buildAdapter();
     }
 
     private void buildAdapter() {
+        items.clear();
         Collections.sort(listNews, new Comparator<Article>() {
             @Override
             public int compare(Article article1, Article article2) {
@@ -41,8 +43,18 @@ public class MyAdapter extends RecyclerView.Adapter {
         for (int i = 0; i < listNews.size(); i++) {
             Article article = listNews.get(i);
             boolean isFirstInSection = isFirstInSection(listNews, article);
+            if (isFirstInSection) {
+                items.add(new Item(ViewType.EMPTY));
+                items.add(new Item(ViewType.FULL_NEWS, article));
+            } else {
+                items.add(new Item(ViewType.DIVIDER));
+                items.add(new Item(ViewType.NEWS, article));
+            }
         }
+        notifyDataSetChanged();
     }
+
+
 
     private boolean isFirstInSection(List<Article> list, Article article) {
         try {

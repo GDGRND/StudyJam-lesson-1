@@ -1,5 +1,7 @@
 package ru.webant.studyjam.models;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -66,6 +68,20 @@ public class Article {
     }
 
     public void setSection(String section) {
-
+        this.section = section;
     }
+
+    @Nullable
+    public Multimedia getImageByType(ImageType imageType) {
+        if (multimedia != null && !multimedia.isEmpty()) {
+            for (Multimedia image : multimedia) {
+                ImageType type = ImageType.fromString(image.getFormat());
+                if (type.equals(imageType)) {
+                    return image;
+                }
+            }
+        }
+        return null;
+    }
+
 }
