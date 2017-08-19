@@ -19,12 +19,15 @@ import ru.webant.studyjam.models.Multimedia;
  * Created by vdaron on 19.08.17.
  */
 
-class ItemNewsFullViewHolder extends RecyclerView.ViewHolder {
+class ItemNewsFullViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private TextView titleText;
     private TextView subtitleText;
     private TextView dateText;
     private ImageView fullImage;
+
+    private Article article;
+    private ArticleClickListener listener;
 
     public ItemNewsFullViewHolder(View itemView) {
         super(itemView);
@@ -32,9 +35,12 @@ class ItemNewsFullViewHolder extends RecyclerView.ViewHolder {
         subtitleText = (TextView) itemView.findViewById(R.id.news_full_subtitle);
         dateText = (TextView) itemView.findViewById(R.id.news_full_date);
         fullImage = (ImageView) itemView.findViewById(R.id.news_full_image);
+        itemView.setOnClickListener(this);
     }
 
-    void bind(Article article) {
+    void bind(Article article, ArticleClickListener listener) {
+        this.article = article;
+        this.listener = listener;
         titleText.setText(article.getTitle());
         subtitleText.setText(article.getDescription());
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -45,7 +51,6 @@ class ItemNewsFullViewHolder extends RecyclerView.ViewHolder {
             fullImage.setVisibility(View.VISIBLE);
             Picasso.with(itemView.getContext())
                     .load(multimedia.getUrl())
-                    .placeholder(R.drawable.ic_fiber_new_black_24dp)
                     .into(fullImage);
         } else {
             fullImage.setVisibility(View.GONE);
@@ -53,6 +58,10 @@ class ItemNewsFullViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-
-
+    @Override
+    public void onClick(View v) {
+        if (listener != null && article != null) {
+            listener.onClick(article);
+        }
+    }
 }

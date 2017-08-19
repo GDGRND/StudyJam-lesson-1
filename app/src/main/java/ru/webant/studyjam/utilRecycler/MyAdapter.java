@@ -26,9 +26,11 @@ public class MyAdapter extends RecyclerView.Adapter {
 
     private ArrayList<Article> listNews;
     private List<Item> items = new ArrayList<>();
+    private ArticleClickListener listener;
 
-    public MyAdapter(ArrayList<Article> listNews) {
+    public MyAdapter(ArrayList<Article> listNews, ArticleClickListener listener) {
         this.listNews = listNews;
+        this.listener = listener;
         buildAdapter();
     }
 
@@ -55,7 +57,6 @@ public class MyAdapter extends RecyclerView.Adapter {
     }
 
 
-
     private boolean isFirstInSection(List<Article> list, Article article) {
         try {
             Article lastArticle = list.get(list.indexOf(article) - 1);
@@ -80,10 +81,10 @@ public class MyAdapter extends RecyclerView.Adapter {
         Item item = items.get(position);
         switch (item.viewType) {
             case FULL_NEWS:
-                ((ItemNewsFullViewHolder) holder).bind((Article) item.object);
+                ((ItemNewsFullViewHolder) holder).bind((Article) item.object, listener);
                 break;
             case NEWS:
-                ((ItemNewsViewHolder) holder).bind((Article) item.object);
+                ((ItemNewsViewHolder) holder).bind((Article) item.object, listener);
                 break;
         }
     }

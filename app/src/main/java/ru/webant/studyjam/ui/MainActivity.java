@@ -1,5 +1,6 @@
 package ru.webant.studyjam.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,15 +17,16 @@ import retrofit2.Response;
 import ru.webant.studyjam.BuildConfig;
 import ru.webant.studyjam.api.MyServiceGenerator;
 import ru.webant.studyjam.api.RestServiceApi;
+import ru.webant.studyjam.models.Article;
 import ru.webant.studyjam.models.NewsFormat;
+import ru.webant.studyjam.utilRecycler.ArticleClickListener;
 import ru.webant.studyjam.utilRecycler.MyAdapter;
 import ru.webant.studyjam.R;
 import ru.webant.studyjam.utilRecycler.RecyclerItemClickListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ArticleClickListener {
 
     private RecyclerView myRecyclerView;
-    private RecyclerView.LayoutManager myLayoutManager;
     private MyAdapter myAdapter;
     private ArrayList<String> listNews = new ArrayList<>();
     private NewsFormat myNews;
@@ -44,11 +46,9 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(MainActivity.this, "it's ok!", Toast.LENGTH_SHORT).show();
                     myNews = response.body();
-                    myLayoutManager = new LinearLayoutManager(MainActivity.this);
-                    myRecyclerView.setLayoutManager(myLayoutManager);
-                    myAdapter = new MyAdapter(myNews.getResults());
+                    myRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    myAdapter = new MyAdapter(myNews.getResults(), MainActivity.this);
                     myRecyclerView.setAdapter(myAdapter);
-                    myAdapter.notifyDataSetChanged();
 
                 } else {
                     Log.i("Call API", "it's a not NewsFormat");
@@ -64,18 +64,12 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 10; i++) {
             listNews.add(getResources().getString(R.string.news_title, Integer.toString(i)));
         }
+    }
 
-
-
-        myRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, myRecyclerView,
-                new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Toast.makeText(getApplicationContext(),
-                        getResources().getString(R.string.news_title, Integer.toString(position)),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }));
-
+    @Override
+    public void onClick(Article article) {
+        Intent intent = new Intent(this, ArticleActivity.class);
+        intent.putExtra(ArticleActivity.ARGUMENT_URL, article.getUrl());
+        startActivity(intent);
     }
 }
