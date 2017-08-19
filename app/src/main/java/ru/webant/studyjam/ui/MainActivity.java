@@ -19,12 +19,11 @@ import ru.webant.studyjam.api.MyServiceGenerator;
 import ru.webant.studyjam.api.RestServiceApi;
 import ru.webant.studyjam.models.Article;
 import ru.webant.studyjam.models.NewsFormat;
-import ru.webant.studyjam.utilRecycler.ArticleClickListener;
 import ru.webant.studyjam.utilRecycler.MyAdapter;
 import ru.webant.studyjam.R;
-import ru.webant.studyjam.utilRecycler.RecyclerItemClickListener;
+import ru.webant.studyjam.utilRecycler.Node;
 
-public class MainActivity extends AppCompatActivity implements ArticleClickListener {
+public class MainActivity extends AppCompatActivity implements Node.Item.ArticleClickListener {
 
     private RecyclerView myRecyclerView;
     private MyAdapter myAdapter;

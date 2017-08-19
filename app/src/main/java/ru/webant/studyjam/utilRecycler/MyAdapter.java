@@ -1,41 +1,39 @@
 package ru.webant.studyjam.utilRecycler;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
-import ru.webant.studyjam.R;
 import ru.webant.studyjam.models.Article;
-import ru.webant.studyjam.models.Multimedia;
-import ru.webant.studyjam.models.NewsFormat;
 
 public class MyAdapter extends RecyclerView.Adapter {
 
     private ArrayList<Article> listNews;
-    private List<Item> items = new ArrayList<>();
-    private ArticleClickListener listener;
+    private List<Node> nodes = new ArrayList<>();
+    private Node.Item.ArticleClickListener listener;
+    private Node.Creator itemDividerCreator;
+    private Node.Creator itemEmptyCreator;
+    private Node.Creator itemFullNewsCreator;
+    private Node.Creator itemNewsCreator;
 
-    public MyAdapter(ArrayList<Article> listNews, ArticleClickListener listener) {
+    public MyAdapter(ArrayList<Article> listNews, Node.Item.ArticleClickListener listener) {
         this.listNews = listNews;
         this.listener = listener;
+
+        itemDividerCreator = ItemDividerViewHolder.getCreator();
+        itemEmptyCreator = ItemEmptyViewHolder.getCreator();
+        itemFullNewsCreator = ItemNewsFullViewHolder.getCreator();
+        itemNewsCreator = ItemNewsViewHolder.getCreator();
+
         buildAdapter();
     }
 
     private void buildAdapter() {
-        items.clear();
+        nodes.clear();
         Collections.sort(listNews, new Comparator<Article>() {
             @Override
             public int compare(Article article1, Article article2) {
@@ -46,11 +44,11 @@ public class MyAdapter extends RecyclerView.Adapter {
             Article article = listNews.get(i);
             boolean isFirstInSection = isFirstInSection(listNews, article);
             if (isFirstInSection) {
-                items.add(new Item(ViewType.EMPTY));
-                items.add(new Item(ViewType.FULL_NEWS, article));
+                nodes.add(new Node(itemEmptyCreator));
+                nodes.add(new Node(itemFullNewsCreator, article));
             } else {
-                items.add(new Item(ViewType.DIVIDER));
-                items.add(new Item(ViewType.NEWS, article));
+                nodes.add(new Node(itemDividerCreator));
+                nodes.add(new Node(itemNewsCreator, article));
             }
         }
         notifyDataSetChanged();
@@ -68,43 +66,23 @@ public class MyAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return ViewType.values()[viewType].getViewHolder(parent);
+        return nodes.get(viewType).create(parent);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return items.get(position).viewType.ordinal();
+        return position;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Item item = items.get(position);
-        switch (item.viewType) {
-            case FULL_NEWS:
-                ((ItemNewsFullViewHolder) holder).bind((Article) item.object, listener);
-                break;
-            case NEWS:
-                ((ItemNewsViewHolder) holder).bind((Article) item.object, listener);
-                break;
-        }
+        if (holder instanceof ItemNewsViewHolder || holder instanceof ItemNewsFullViewHolder)
+            ((Node.Item) holder).bind(nodes.get(position).getArticle(), listener);
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return nodes.size();
     }
 
-    private class Item {
-        private ViewType viewType;
-        private Object object;
-
-        public Item(ViewType vt, Object o) {
-            this.viewType = vt;
-            this.object = o;
-        }
-
-        public Item(ViewType vt) {
-            this.viewType = vt;
-        }
-    }
 }
