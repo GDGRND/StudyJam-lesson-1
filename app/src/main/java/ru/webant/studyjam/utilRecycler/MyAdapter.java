@@ -12,67 +12,86 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 import ru.webant.studyjam.R;
 import ru.webant.studyjam.models.Article;
 import ru.webant.studyjam.models.Multimedia;
 import ru.webant.studyjam.models.NewsFormat;
 
-/**
- * Created by vdaron on 29.07.17.
- */
-
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class MyAdapter extends RecyclerView.Adapter {
 
     private ArrayList<Article> listNews;
+    private List<Item> items = new ArrayList<>();
 
     public MyAdapter(ArrayList<Article> listNews) {
         this.listNews = listNews;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    private void buildAdapter() {
+        Collections.sort(listNews, new Comparator<Article>() {
+            @Override
+            public int compare(Article article1, Article article2) {
+                return article1.getSection().equalsIgnoreCase(article2.getSection()) ? 1 : -1;
+            }
+        });
+        for (int i = 0; i < listNews.size(); i++) {
+            Article article = listNews.get(i);
+            boolean isFirstInSection = isFirstInSection(listNews, article);
+        }
+    }
 
-        public TextView titleNews;
-        public TextView descriptionNews;
-        public ImageView imageNews;
-        public TextView timeNews;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-
-            titleNews = (TextView) itemView.findViewById(R.id.title_news);
-            descriptionNews = (TextView) itemView.findViewById(R.id.description_news);
-            imageNews = (ImageView) itemView.findViewById(R.id.image_news);
-            timeNews = (TextView) itemView.findViewById(R.id.time_news);
+    private boolean isFirstInSection(List<Article> list, Article article) {
+        try {
+            Article lastArticle = list.get(list.indexOf(article) - 1);
+            return !lastArticle.getSection().equalsIgnoreCase(article.getSection());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return true;
         }
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-
-        View view = layoutInflater.inflate(R.layout.item_news, parent, false);
-        return new MyViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return ViewType.values()[viewType].getViewHolder(parent);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public int getItemViewType(int position) {
+        return items.get(position).viewType.ordinal();
+    }
 
-        holder.titleNews.setText(listNews.get(position).getTitle());
-        holder.descriptionNews.setText(listNews.get(position).getDescription());
-        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        holder.timeNews.setText(formatter.format(listNews.get(position).getCreatedDate()));
-
-        ArrayList<Multimedia> multimedias = listNews.get(position).getMultimedia();
-        if (multimedias != null && !multimedias.isEmpty()) {
-            Picasso.with(holder.itemView.getContext())
-                    .load(multimedias.get(0).getUrl())
-                    .into(holder.imageNews);
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Item item = items.get(position);
+        switch (item.viewType) {
+            case FULL_NEWS:
+                ((ItemNewsFullViewHolder) holder).bind((Article) item.object);
+                break;
+            case NEWS:
+                ((ItemNewsViewHolder) holder).bind((Article) item.object);
+                break;
         }
     }
 
     @Override
     public int getItemCount() {
-        return listNews.size();
+        return items.size();
+    }
+
+    private class Item {
+        private ViewType viewType;
+        private Object object;
+
+        public Item(ViewType vt, Object o) {
+            this.viewType = vt;
+            this.object = o;
+        }
+
+        public Item(ViewType vt) {
+            this.viewType = vt;
+        }
     }
 }

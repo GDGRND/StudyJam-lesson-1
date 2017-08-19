@@ -7,4 +7,5 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="blue">#6200ea</color>
+    <color name="divider_color">#ededed</color>
 </resources>

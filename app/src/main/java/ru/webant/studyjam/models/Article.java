@@ -10,6 +10,9 @@ import java.util.Date;
  */
 
 public class Article {
+
+    private String section;
+
     private String title;
     @SerializedName("abstract")
     private String description;
@@ -56,5 +59,13 @@ public class Article {
 
     public void setMultimedia(ArrayList<Multimedia> multimedia) {
         this.multimedia = multimedia;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+
     }
 }
